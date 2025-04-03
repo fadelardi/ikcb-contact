@@ -3,28 +3,32 @@ import logging
 
 app = func.FunctionApp(http_auth_level=func.AuthLevel.FUNCTION)
 
-@app.route(route="httpget", methods=["GET"])
-def http_get(req: func.HttpRequest) -> func.HttpResponse:
-    name = req.params.get("name", "World")
+# @app.route(route="httpget", methods=["GET"])
+# def http_get(req: func.HttpRequest) -> func.HttpResponse:
+#     name = req.params.get("name", "World")
 
-    logging.info(f"Processing GET request. Name: {name}")
+#     logging.info(f"Processing GET request. Name: {name}")
 
-    return func.HttpResponse(f"Hello, {name}!")
+#     return func.HttpResponse(f"Hello, {name}!")
 
-@app.route(route="httppost", methods=["POST"])
-def http_post(req: func.HttpRequest) -> func.HttpResponse:
+@app.route(route="contact", methods=["POST"])
+def contact(req: func.HttpRequest) -> func.HttpResponse:
     try:
         req_body = req.get_json()
         name = req_body.get('name')
-        age = req_body.get('age')
+        email = req_body.get('email')
+        subject = req_body.get('subject')
+        msg = req_body.get('message')
         
-        logging.info(f"Processing POST request. Name: {name}")
+        logging.info(f"Processing POST request. Name: {name}, Email: {email}, Subject: {subject}, Message: {msg}")
 
-        if name and isinstance(name, str) and age and isinstance(age, int):
-            return func.HttpResponse(f"Hello, {name}! You are {age} years old!")
+        if name and isinstance(name, str) and email and isinstance(email, int) and msg and isinstance(msg, str):
+            if not subject:
+                subject = "No Subject"
+            return func.HttpResponse(f"Name: {name}, Email: {email}, Subject: {subject}, Message: {msg}", status_code=200)
         else:
             return func.HttpResponse(
-                "Please provide both 'name' and 'age' in the request body.",
+                "Mandatory fields 'name', 'email', 'message' are missing from request body.",
                 status_code=400
             )
     except ValueError:

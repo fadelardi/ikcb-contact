@@ -1,4 +1,6 @@
 {
-  "name": "Awesome Developer",
-  "age": 25
+  "name": "Name",
+  "email": "email@domain.com",
+  "subject": "Subject",
+  "message": "Message"
 }
